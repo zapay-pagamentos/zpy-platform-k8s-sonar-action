@@ -1,0 +1,45 @@
+name: 'Sonar Scan'
+description: 'Execute sonar scan'
+inputs:
+  sonar-version:
+    description: 'Sonar version'
+    required: true
+  sonar-token:
+    description: 'Sonar token'
+    required: true
+  sonar-url:
+    description: 'Sonar URl'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Sonar Cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/hostedtoolcache/sonar-scanner
+        key: sonar-scanner-${{ runner.os }}-${{ runner.arch }}-${{ inputs.sonar-version }}
+    - name: Setup sonarqube
+      uses: warchant/setup-sonar-scanner@v3
+      with:
+        version: ${{ inputs.sonar-version }}
+    - name: Download coverage
+      uses: actions/download-artifact@v3
+      with:
+        name: coverage-${{ github.run_id }}
+        path: .
+    - name: SonarQube Scan
+      shell: bash
+      run: sonar-scanner -Dsonar.projectBaseDir=.
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        SONAR_HOST_URL: ${{ inputs.sonar-url }}
+    - name: Sonar Check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      continue-on-error: true
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
