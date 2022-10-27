@@ -39,7 +39,6 @@ runs:
         SONAR_HOST_URL: ${{ inputs.sonar-url }}
     - name: Sonar Check
       uses: sonarsource/sonarqube-quality-gate-action@master
-      timeout-minutes: 5
       continue-on-error: true
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
