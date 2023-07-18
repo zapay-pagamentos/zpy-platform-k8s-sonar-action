@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zpy-platform-k8s-sonar-action
+  description: Github Action to execute sonar scan
+  annotations:
+    github.com/project-slug: zapay-pagamentos/zpy-platform-k8s-sonar-action
+spec:
+  type: library
+  lifecycle: production
+  owner: darrell
