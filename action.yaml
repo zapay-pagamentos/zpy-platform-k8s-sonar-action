@@ -18,6 +18,10 @@ inputs:
     description: 'Strict mode'
     required: false
     default: 'false'
+  project-version:
+    description: 'Version of project'
+    required: false
+    default: 'latest'
 
 runs:
   using: "composite"
@@ -42,10 +46,11 @@ runs:
         path: .
     - name: SonarQube Scan
       shell: bash
-      run: sonar-scanner -Dsonar.projectBaseDir=.
+      run: sonar-scanner -Dsonar.projectBaseDir=. -Dsonar.projectVersion=$PROJECT_VERSION
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         SONAR_HOST_URL: ${{ inputs.sonar-url }}
+        PROJECT_VERSION: ${{ inputs.project-version }}
     - name: Sonar Check
       uses: sonarsource/sonarqube-quality-gate-action@master
       continue-on-error: ${{ inputs.strict == 'false' }}
