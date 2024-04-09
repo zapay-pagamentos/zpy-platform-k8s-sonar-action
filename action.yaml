@@ -22,6 +22,9 @@ inputs:
     description: 'Version of project'
     required: false
     default: 'latest'
+  extras:
+    description: 'Extras configurations for Sonar'
+    required: false
 
 runs:
   using: "composite"
@@ -46,7 +49,7 @@ runs:
         path: .
     - name: SonarQube Scan
       shell: bash
-      run: sonar-scanner -Dsonar.projectBaseDir=. -Dsonar.projectVersion=$PROJECT_VERSION
+      run: sonar-scanner -Dsonar.projectBaseDir=. -Dsonar.projectVersion=$PROJECT_VERSION ${{ inputs.extras }}
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         SONAR_HOST_URL: ${{ inputs.sonar-url }}
